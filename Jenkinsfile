@@ -1,8 +1,9 @@
 pipeline {
-    agent any
-
-    tools {
-        nodejs 'Node-18'   // Make sure this Node version is configured in Jenkins
+    agent {
+        docker {
+            image 'node:18'
+            args '-u root:root'
+        }
     }
 
     stages {
@@ -27,7 +28,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'npm test'
+                sh 'npm test -- --ci --reporters=default --reporters=jest-junit'
             }
             post {
                 always {
