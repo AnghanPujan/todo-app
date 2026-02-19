@@ -1,58 +1,57 @@
 pipeline {
-    agent any
+    agent any
 
-    environment {
-        NODE_VERSION = "18"
-    }
+    tools {
+        nodejs 'Node-18'   // Make sure this Node version is configured in Jenkins
+    }
 
-    stages {
+    stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm ci'
+            }
+        }
 
-        stage('Lint') {
-            steps {
-                sh 'npm run lint || true'
-            }
-        }
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
 
-        stage('Build') {
-            steps {
-                sh 'npm run build'
-            }
-        }
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+            post {
+                always {
+                    junit '**/junit*.xml'
+                }
+            }
+        }
 
-        stage('Test') {
-            steps {
-                sh 'npm test || true'
-            }
-        }
+        stage('Archive Build') {
+            steps {
+                archiveArtifacts artifacts: 'dist/**', fingerprint: true
+            }
+        }
+    }
 
-        stage('Archive Build') {
-            steps {
-                archiveArtifacts artifacts: 'dist/**', fingerprint: true
-            }
-        }
-    }
-
-    post {
-        always {
-            cleanWs()
-        }
-        success {
-            echo "Build Success"
-        }
-        failure {
-            echo "Build Failed"
-        }
-    }
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo 'Build Success'
+        }
+        failure {
+            echo 'Build Failed'
+        }
+    }
 }
