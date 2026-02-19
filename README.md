@@ -7,6 +7,11 @@ Welcome to the React Vite Todo App! This is a simple web application built using
 ### Create New Tasks: 
 Add new tasks to your to-do list by typing in the task description and pressing the "Add" button.
 
+
+
+
+
+
 ### Mark Completed Tasks: 
 Once you've completed a task, simply click the checkbox next to the task to mark it as completed. The task will be visually distinguished to show its completion status.
 
