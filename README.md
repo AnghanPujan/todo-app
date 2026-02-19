@@ -10,8 +10,10 @@ Add new tasks to your to-do list by typing in the task description and pressing 
 Once you've completed a task, simply click the checkbox next to the task to mark it as completed. The task will be visually distinguished to show its completion status.
 ### Delete Tasks: 
 If you no longer need a task, you can remove it from the list by clicking the "Delete" button next to the task.
+
 ### Local Storage: 
 The app uses local storage to store your tasks. This means that even if you close the browser or refresh the page, your tasks will be saved and available the next time you visit the app.
+
 ## Getting Started
 
 To get started with the Todo App, follow these steps:
