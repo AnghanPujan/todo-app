@@ -1,0 +1,32 @@
+# Stage 1: Builder (lint, test, build)
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Copy package files for caching
+COPY package*.json ./
+RUN npm ci --only=production=false --no-optional && npm cache clean --force
+
+# Copy source and build
+COPY . .
+RUN npm run lint && npm run test:ci && npm run build
+
+# Stage 2: Runtime (minimal, secure)
+FROM node:20-alpine AS runtime
+
+# Create non-root user
+RUN addgroup -g 1001 -S appgroup && \ adduser -S todoapp -u 1001 -G appgroup
+
+WORKDIR /app
+
+# Copy production deps & build output
+COPY --from=builder --chown=todoapp:appgroup /app/node_modules ./node_modules
+COPY --from=builder --chown=todoapp:appgroup /app/dist ./dist
+COPY --chown=todoapp:appgroup package*.json ./
+
+# Prune dev deps & install serve for static SPA hosting
+RUN npm prune --production && npm install -g serve@14
+EXPOSE 3000
+
+# Run as non-root
+USER todoapp
+CMD ["serve", "-s", "dist", "-l", "3000"]
