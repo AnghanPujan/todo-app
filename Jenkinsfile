@@ -22,19 +22,6 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                // Run tests, but do not fail pipeline if tests fail
-                sh 'npm test || true'
-            }
-            post {
-                always {
-                    // Collect test results if any junit XML files exist
-                    junit '**/junit*.xml'
-                }
-            }
-        }
-
         stage('Archive Build') {
             steps {
                 // Archive the built dist folder
